@@ -1,6 +1,3 @@
-✅ GitHub README for Your Laravel App
-md
-
 # Laravel API Project
 
 This is a Laravel-based API that includes authentication via Laravel Passport, scheduled tasks, and database seeding.

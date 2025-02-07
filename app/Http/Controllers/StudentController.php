@@ -13,6 +13,17 @@ class StudentController extends Controller
         return response()->json($students);
     }
 
+    public function search(Request $request)
+    {
+        $students = Student::search($request->only(['nim', 'nama', 'ymd']))->paginate(20);
+
+        if ($students->isEmpty()) {
+            return response()->json(['message' => 'No matching students found.'], 404);
+        }
+
+        return response()->json($students);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

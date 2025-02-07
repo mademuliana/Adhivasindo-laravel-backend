@@ -64,7 +64,7 @@ php artisan passport:client --personal
 Note: Using php artisan passport:client --personal eliminates the need to re-install Passport.
 
 ### 7️⃣ Schedule Tasks (Cron Jobs)
-Laravel uses the scheduler to automate commands. Run this to execute scheduled tasks manually:
+in this project uses the scheduler to automate commands for checking the latest data in the STUDENTS_DATA_URL, to keep the data updated at realtime speed. Run this to execute scheduled tasks manually:
 
 ```sh
 php artisan schedule:run
@@ -73,33 +73,19 @@ Run this to execute scheduled tasks periodicaly:
 ```sh
 php artisan schedule:work
 ```
-
 To automate it, set up a cron job:
 ```sh
-
 * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
 ```
 ### 8️⃣ Start the Application
 ```sh
-
 php artisan serve
+```
+and this message should appear
 Your API is now running at http://127.0.0.1:8000 🚀.
-```
+
+
 🔑 Authentication (Laravel Passport)
-Use the /oauth/token endpoint to obtain an access token:
-POST /oauth/token
-```sh
-
-{
-    "grant_type": "password",
-    "client_id": "your_client_id",
-    "client_secret": "your_client_secret",
-    "username": "user@example.com",
-    "password": "your_password",
-    "scope": "*"
-}
-
-```
 For personal access tokens, use:
 POST /api/login
 ```sh
@@ -107,20 +93,30 @@ POST /api/login
     "email": "user@example.com",
     "password": "your_password"
 }
+
+```
 Include the token in the Authorization header for protected routes:
 
 makefile
 Authorization: Bearer your_token
-```
+
 🛠 API Endpoints
 
-Method	Endpoint	Description	Authentication
-
-POST	/api/login	Login User	No
-
-POST	/api/register	Register User	No
-
-GET	/api/users	Get All Users (Paginated)	✅ Yes
+|Method|Route|Controller & Method|Middleware|Description|
+|POST|/api/login|AuthenticationController@login|None|User login (returns API token)|
+|GET|/api/student-profile|UserController@studentProfile|auth:api, RoleMiddleware:student|Get authenticated student's profile|
+|GET|/api/student-search|StudentController@search|auth:api, RoleMiddleware:admin|Search for students|
+|POST|/api/create-student|UserController@createStudent|auth:api, RoleMiddleware:admin|Create a new student and user account at the same time|
+|GET|/api/users|UserController@index|auth:api, RoleMiddleware:admin|Get all users|
+|POST|/api/users|UserController@store|auth:api, RoleMiddleware:admin|Create a user|
+|GET|/api/users/{id}|UserController@show|auth:api, RoleMiddleware:admin|Get user by ID|
+|PUT|/api/users/{id}|UserController@update|auth:api, RoleMiddleware:admin|Update user|
+|DELETE|/api/users/{id}|UserController@destroy|auth:api, RoleMiddleware:admin|Delete user|
+|GET|/api/students|StudentController@index|auth:api, RoleMiddleware:admin|Get all students|
+|POST|/api/students|StudentController@store|auth:api, RoleMiddleware:admin|Create a student|
+|GET|/api/students/{id}|StudentController@show|auth:api, RoleMiddleware:admin|Get student by ID|
+|PUT|/api/students/{id}|StudentController@update|auth:api, RoleMiddleware:admin|Update student|
+|DELETE|/api/students/{id}|StudentController@destroy|auth:api, RoleMiddleware:admin|Delete student|
 
 🔧 Troubleshooting
 If you encounter any issues, try:

@@ -101,22 +101,21 @@ makefile
 Authorization: Bearer your_token
 
 🛠 API Endpoints
-
-|Method|Route|Controller & Method|Middleware|Description|
-|POST|/api/login|AuthenticationController@login|None|User login (returns API token)|
-|GET|/api/student-profile|UserController@studentProfile|auth:api, RoleMiddleware:student|Get authenticated student's profile|
-|GET|/api/student-search|StudentController@search|auth:api, RoleMiddleware:admin|Search for students|
-|POST|/api/create-student|UserController@createStudent|auth:api, RoleMiddleware:admin|Create a new student and user account at the same time|
-|GET|/api/users|UserController@index|auth:api, RoleMiddleware:admin|Get all users|
-|POST|/api/users|UserController@store|auth:api, RoleMiddleware:admin|Create a user|
-|GET|/api/users/{id}|UserController@show|auth:api, RoleMiddleware:admin|Get user by ID|
-|PUT|/api/users/{id}|UserController@update|auth:api, RoleMiddleware:admin|Update user|
-|DELETE|/api/users/{id}|UserController@destroy|auth:api, RoleMiddleware:admin|Delete user|
-|GET|/api/students|StudentController@index|auth:api, RoleMiddleware:admin|Get all students|
-|POST|/api/students|StudentController@store|auth:api, RoleMiddleware:admin|Create a student|
-|GET|/api/students/{id}|StudentController@show|auth:api, RoleMiddleware:admin|Get student by ID|
-|PUT|/api/students/{id}|StudentController@update|auth:api, RoleMiddleware:admin|Update student|
-|DELETE|/api/students/{id}|StudentController@destroy|auth:api, RoleMiddleware:admin|Delete student|
+|   Method    |   Route    |   Controller & Method    |   Middleware    |   Description    |   
+|   POST    |   /api/login    |   AuthenticationController@login    |   None    |   User login (returns API token)    |   
+|   GET    |   /api/student-profile    |   UserController@studentProfile    |   auth:api, RoleMiddleware:student    |   Get authenticated student's profile    |   
+|   GET    |   /api/student-search    |   StudentController@search    |   auth:api, RoleMiddleware:admin    |   Search for students    |   
+|   POST    |   /api/create-student    |   UserController@createStudent    |   auth:api, RoleMiddleware:admin    |   Create a new student and user account at the same time    |   
+|   GET    |   /api/users    |   UserController@index    |   auth:api, RoleMiddleware:admin    |   Get all users    |   
+|   POST    |   /api/users    |   UserController@store    |   auth:api, RoleMiddleware:admin    |   Create a user    |   
+|   GET    |   /api/users/{id}    |   UserController@show    |   auth:api, RoleMiddleware:admin    |   Get user by ID    |   
+|   PUT    |   /api/users/{id}    |   UserController@update    |   auth:api, RoleMiddleware:admin    |   Update user    |   
+|   DELETE    |   /api/users/{id}    |   UserController@destroy    |   auth:api, RoleMiddleware:admin    |   Delete user    |   
+|   GET    |   /api/students    |   StudentController@index    |   auth:api, RoleMiddleware:admin    |   Get all students    |   
+|   POST    |   /api/students    |   StudentController@store    |   auth:api, RoleMiddleware:admin    |   Create a student    |   
+|   GET    |   /api/students/{id}    |   StudentController@show    |   auth:api, RoleMiddleware:admin    |   Get student by ID    |   
+|   PUT    |   /api/students/{id}    |   StudentController@update    |   auth:api, RoleMiddleware:admin    |   Update student    |   
+|   DELETE    |   /api/students/{id}    |   StudentController@destroy    |   auth:api, RoleMiddleware:admin    |   Delete student    |   
 
 🔧 Troubleshooting
 If you encounter any issues, try:

@@ -132,6 +132,7 @@ php artisan migrate:fresh --seed
 ```
 
 📜 Notes
+
 the included file like postman collection and database sql file is named as below
 ```sh
 postman collection: Adhivasindo backend.postman_collection.json

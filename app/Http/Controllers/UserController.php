@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,54 +12,41 @@ class UserController extends Controller
 {
     public function index()
     {
-        $Users = User::all();
-        return response()->json($Users);
+        return response()->json(User::all());
     }
+
     public function studentProfile()
     {
-        $Users = User::with('students')->find(Auth::id());
-        return response()->json($Users);
+        $user = User::with('students')->find(Auth::id());
+        return response()->json($user);
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $validatedData = $request->validate([
-            'username' => 'required|string|max:255',
-            'role' => 'required|in:student,admin',
-            'email' => 'required|email|unique:users',
-            'password' => 'nullable|string|min:6',
-        ]);
-
+        $validatedData = $request->validated();
         $validatedData['password'] = Hash::make($validatedData['password'] ?? 'password123');
 
         $user = User::create($validatedData);
         return response()->json(['message' => 'User registered successfully!', 'User' => $user], 201);
     }
 
-    public function show(User $User)
+    public function show(User $user)
     {
-        return response()->json($User);
+        return response()->json($user);
     }
 
-    public function update(Request $request, User $User)
+    public function update(UserRequest $request, User $user)
     {
-        $validatedData = $request->validate([
-            'username' => 'required|string|max:255',
-            'role' => 'required|in:student,admin',
-            'email' => 'required|email|unique:users',
-            'password' => 'nullable|string|min:6',
-        ]);
-
+        $validatedData = $request->validated();
         $validatedData['password'] = Hash::make($validatedData['password'] ?? 'password123');
 
-        $User->update($validatedData);
-
-        return response()->json(['message' => 'User updated successfully!', 'User' => $User]);
+        $user->update($validatedData);
+        return response()->json(['message' => 'User updated successfully!', 'User' => $user]);
     }
 
-    public function destroy(User $User)
+    public function destroy(User $user)
     {
-        $User->delete();
+        $user->delete();
         return response()->json(['message' => 'User deleted successfully!']);
     }
 }

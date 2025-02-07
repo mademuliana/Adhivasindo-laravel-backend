@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
-use App\Services\StudentDataService;
+use App\Http\Requests\StudentRequest;
 
 class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::all();
-        return response()->json($students);
+        return response()->json(Student::all());
     }
 
     public function search(Request $request)
@@ -25,15 +24,9 @@ class StudentController extends Controller
         return response()->json($students);
     }
 
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'nim' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'ymd' => 'required|date',
-        ]);
-
-        $student = Student::create($request->all());
+        $student = Student::create($request->validated());
 
         return response()->json(['message' => 'Student registered successfully!', 'student' => $student], 201);
     }
@@ -43,15 +36,9 @@ class StudentController extends Controller
         return response()->json($student);
     }
 
-    public function update(Request $request, Student $student)
+    public function update(StudentRequest $request, Student $student)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'nim' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'ymd' => 'required|date',
-        ]);
-
-        $student->update($request->all());
+        $student->update($request->validated());
 
         return response()->json(['message' => 'Student updated successfully!', 'student' => $student]);
     }
@@ -61,5 +48,4 @@ class StudentController extends Controller
         $student->delete();
         return response()->json(['message' => 'Student deleted successfully!']);
     }
-
 }

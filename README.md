@@ -101,7 +101,9 @@ makefile
 Authorization: Bearer your_token
 
 🛠 API Endpoints
+
 |   Method    |   Route    |   Controller & Method    |   Middleware    |   Description    |   
+|   ------    |   -----    |   -------------------    |   ----------    |   -----------    |   
 |   POST    |   /api/login    |   AuthenticationController@login    |   None    |   User login (returns API token)    |   
 |   GET    |   /api/student-profile    |   UserController@studentProfile    |   auth:api, RoleMiddleware:student    |   Get authenticated student's profile    |   
 |   GET    |   /api/student-search    |   StudentController@search    |   auth:api, RoleMiddleware:admin    |   Search for students    |   

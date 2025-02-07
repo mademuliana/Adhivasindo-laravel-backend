@@ -10,16 +10,13 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nama');
             $table->string('nim');
-            $table->enum('faculty', ['FIT', 'FIK', 'FIP']);
-            $table->enum('major', ['computer science', 'doctorate', 'farming technology']);
-            $table->date('registered_date')->nullable();
-            $table->date('graduation_date')->nullable();
+            $table->date('ymd')->nullable();
             $table->timestamps();
 
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         DB::statement("ALTER TABLE students ADD CONSTRAINT check_nim CHECK (nim REGEXP '^[0-9]+$')");

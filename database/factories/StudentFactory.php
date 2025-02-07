@@ -17,13 +17,10 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=> $this->faker->name(),
+            'nama'=> $this->faker->name(),
             'nim'=> $this->faker->numerify('#############'),
-            'faculty'=> $this->faker->randomElement(['FIT', 'FIK', 'FIP']),
-            'major'=> $this->faker->randomElement(['computer science', 'doctorate', 'farming technology']),
-            'registered_date' => $this->faker->dateTimeBetween('-4 years', 'now'),
-            'graduation_date' => $this->faker->optional()->dateTimeBetween('now', '+4 years'),
-            'user_id' => null
+            'ymd' => $this->faker->optional()->dateTimeBetween('now', '+4 years'),
+            // 'user_id' => null
         ];
     }
 

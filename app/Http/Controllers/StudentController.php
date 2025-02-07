@@ -18,10 +18,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'nim' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'faculty' => 'required|in:FIT,FIK,FIP',
-            'major' => 'required|in:computer science,doctorate,farming technology',
-            'registered_date' => 'required|date',
-            'graduation_date' => 'nullable|date',
+            'ymd' => 'required|date',
         ]);
 
         $student = Student::create($request->all());
@@ -37,12 +34,9 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'nim' => 'sometimes|required|string|max:13|regex:/^[0-9]+$/',
-            'faculty' => 'sometimes|required|in:FIT,FIK,FIP',
-            'major' => 'sometimes|required|in:computer science,doctorate,farming technology',
-            'registered_date' => 'sometimes|required|date',
-            'graduation_date' => 'nullable|date',
+            'name' => 'required|string|max:255',
+            'nim' => 'required|string|max:13|regex:/^[0-9]+$/',
+            'ymd' => 'required|date',
         ]);
 
         $student->update($request->all());

@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'student_datas' => [
+        'url' => env('STUDENT_DATAS_URL', 'https://ogienurdiana.com/career/ecc694ce4e7f6e45a5a7912cde9fe131'),
+    ],
+
 ];

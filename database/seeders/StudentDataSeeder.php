@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Student;
 use App\Services\StudentDataService;
 
 class StudentDataSeeder extends Seeder
@@ -17,15 +16,11 @@ class StudentDataSeeder extends Seeder
 
     public function run()
     {
-        $students = $this->studentDataService->fetchStudentData();
+        $result = $this->studentDataService->fetchStudentData();
 
-        if (empty($students)) {
-            $this->command->error("No student data to seed.");
+        if ($result === null) {
+            $this->command->error("No new student data to seed.");
             return;
-        }
-
-        foreach ($students as $student) {
-            Student::create($student);
         }
 
         $this->command->info("Student data seeded successfully.");

@@ -22,11 +22,10 @@ class UserStudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'nim' => 'required|string|max:13|regex:/^[0-9]+$/',
             'ymd' => 'required|date',
             'role' => 'required|in:student,admin',
-            'email' => 'required|email|unique:users,email,' . $this->user?->id,
             'password' => 'nullable|string|min:6',
         ];
     }

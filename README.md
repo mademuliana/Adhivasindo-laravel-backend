@@ -1,7 +1,6 @@
 ✅ GitHub README for Your Laravel App
 md
-Copy
-Edit
+
 # Laravel API Project
 
 This is a Laravel-based API that includes authentication via Laravel Passport, scheduled tasks, and database seeding.
@@ -13,73 +12,69 @@ Make sure you have the following installed before proceeding:
 - [PHP](https://www.php.net/downloads.php) (≥ 8.0 recommended)
 - [Composer](https://getcomposer.org/download/)
 - [MySQL](https://dev.mysql.com/downloads/)
-- [Node.js & npm](https://nodejs.org/en/download/) (optional for frontend dependencies)
 - Laravel CLI (`composer global require laravel/installer`)
 
 ## 🚀 Installation Steps
 
 ### 1️⃣ **Clone the Repository**
-```sh
+sh
 git clone https://github.com/your-username/your-repository.git
 cd your-repository
-2️⃣ Install Dependencies
+
+### 2️⃣ Install Dependencies
 sh
-Copy
-Edit
+
 composer install
-3️⃣ Set Up Environment Variables
+
+### 3️⃣ Set Up Environment Variables
 Copy .env.example to .env:
 
 sh
-Copy
-Edit
+
 cp .env.example .env
 Update your .env file with your database and mail credentials:
 
 ini
-Copy
-Edit
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=your_database_name
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
-4️⃣ Generate Application Key
+
+### 4️⃣ Generate Application Key
 sh
-Copy
-Edit
+
 php artisan key:generate
-5️⃣ Run Database Migrations & Seeders
+
+### 5️⃣ Run Database Migrations & Seeders
 sh
-Copy
-Edit
+
 php artisan migrate --seed
-6️⃣ Set Up Laravel Passport (Authentication)
+
+### 6️⃣ Set Up Laravel Passport (Authentication)
 sh
-Copy
-Edit
+
 php artisan passport:install
 php artisan passport:client --personal
 Note: Using php artisan passport:client --personal eliminates the need to re-install Passport.
 
-7️⃣ Schedule Tasks (Cron Jobs)
+### 7️⃣ Schedule Tasks (Cron Jobs)
 Laravel uses the scheduler to automate commands. Run this to execute scheduled tasks manually:
 
 sh
-Copy
-Edit
+
 php artisan schedule:run
 To automate it, set up a cron job:
 
 sh
-Copy
-Edit
+
 * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
-8️⃣ Start the Application
+
+### 8️⃣ Start the Application
 sh
-Copy
-Edit
+
 php artisan serve
 Your API is now running at http://127.0.0.1:8000 🚀.
 
@@ -87,8 +82,6 @@ Your API is now running at http://127.0.0.1:8000 🚀.
 Use the /oauth/token endpoint to obtain an access token:
 
 sh
-Copy
-Edit
 POST /oauth/token
 {
     "grant_type": "password",
@@ -101,8 +94,6 @@ POST /oauth/token
 For personal access tokens, use:
 
 sh
-Copy
-Edit
 POST /api/login
 {
     "email": "user@example.com",
@@ -111,16 +102,8 @@ POST /api/login
 Include the token in the Authorization header for protected routes:
 
 makefile
-Copy
-Edit
 Authorization: Bearer your_token
-🔄 Running Tests
-To run tests:
 
-sh
-Copy
-Edit
-php artisan test
 🛠 API Endpoints
 Method	Endpoint	Description	Authentication
 POST	/api/login	Login User	No
@@ -130,8 +113,7 @@ GET	/api/users	Get All Users (Paginated)	✅ Yes
 If you encounter any issues, try:
 
 sh
-Copy
-Edit
+
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
@@ -147,8 +129,7 @@ If you'd like to contribute, fork the repository and submit a pull request. 🙌
 If you have any questions, feel free to open an issue or reach out! 🚀
 
 markdown
-Copy
-Edit
+
 
 ---
 

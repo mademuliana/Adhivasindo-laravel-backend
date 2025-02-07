@@ -130,6 +130,13 @@ php artisan route:clear
 php artisan view:clear
 php artisan migrate:fresh --seed
 ```
+
+📜 Notes
+the included file like postman collection and database sql file is named as below
+```sh
+postman collection: Adhivasindo backend.postman_collection.json
+database: db.sql
+```
 📜 License
 This project is open-source and available under the MIT License.
 

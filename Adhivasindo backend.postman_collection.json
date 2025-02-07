@@ -1,0 +1,817 @@
+{
+	"info": {
+		"_postman_id": "288d9f2a-a1d1-4d0d-8a17-e77f7f06a41d",
+		"name": "Adhivasindo backend",
+		"description": "📌 Project Overview  \nThis API is designed for user authentication and managing students in the system. It includes role-based access control (RBAC), where users can be either students or admins. Some endpoints require authentication via an API token.\n\n🛠️ Authentication & Role-Based Access  \nLogin Endpoint: Accessible by all users.  \nStudent Endpoints: Require student role authentication.  \nAdmin Endpoints: Require admin role authentication.\n\n🚀 Endpoints & Field Requirements\n\n1️⃣ Authentication  \n🔹 Login  \nURL: POST /api/login  \nDescription: Users must log in to receive an API token.  \nRequired Fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| email | String | User's email (must be registered) |\n| password | String | User's password |\n\nResponse Example:\n\n``` json\n{\n  \"token\": \"your_access_token\",\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"JohnDoe\",\n    \"role\": \"student\"\n  }\n}\n\n ```\n\n2️⃣ Student Routes (Requires student role)  \n🔹 Get Student Profile  \nURL: GET /api/student-profile  \nDescription: Retrieve the profile of the authenticated student.  \nAuthorization: Requires auth:api middleware with student role.\n\nResponse Example:\n\n``` json\n{\n  \"id\": 1,\n  \"username\": \"JohnDoe\",\n  \"role\": \"student\",\n  \"email\": \"johndoe@example.com\",\n  \"student\": {\n    \"user_id\": 2,\n    \"nama\": \"John Doe\",\n    \"nim\": \"123456789\",\n    \"ymd\": \"2000-01-01\"\n  }\n}\n\n ```\n\n3️⃣ Admin Routes (Requires admin role)  \n🔹 Search Students  \nURL: GET /api/student-search  \nDescription: Allows admins to search for students using query parameters.  \nRequired Parameters (At least one required):\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| nim | String | Student's NIM (unique identifier) |\n| nama | String | Student's full name |\n| ymd | Date | Date of birth (YYYY-MM-DD) |\n\nResponse Example:\n\n``` json\n[\n  {\n    \"id\": 1,\n    \"user_id\": 2,\n    \"nama\": \"John Doe\",\n    \"nim\": \"123456789\",\n    \"ymd\": \"2000-01-01\"\n  }\n]\n\n ```\n\n🔹 Manage Users (CRUD)  \n➤ Get All Users  \nURL: GET /api/users  \nDescription: Retrieve all registered users.\n\nResponse Example:\n\n``` json\n[\n  {\n    \"id\": 1,\n    \"username\": \"JohnDoe\",\n    \"role\": \"admin\",\n    \"email\": \"johndoe@example.com\"\n  }\n]\n\n ```\n\n➤ Create a User  \nURL: POST /api/users  \nRequired Fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| username | String | User's username |\n| role | Enum (student, admin) | Role assigned to the user |\n| email | String | Must be unique |\n| password | String | Min: 6 characters |\n\nResponse Example:\n\n``` json\n{\n  \"message\": \"User registered successfully!\",\n  \"user\": {\n    \"id\": 2,\n    \"username\": \"JaneDoe\",\n    \"role\": \"student\",\n    \"email\": \"janedoe@example.com\"\n  }\n}\n\n ```\n\n➤ Update a User  \nURL: PUT /api/users/{id}  \nRequired Fields: (Same as Create User)\n\n➤ Delete a User  \nURL: DELETE /api/users/{id}\n\n🔹 Manage Students (CRUD)  \n➤ Get All Students  \nURL: GET /api/students  \nDescription: Retrieve all registered students.\n\n➤ Create a Student  \nURL: POST /api/students  \nRequired Fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| user_id | Integer | Associated User ID |\n| nama | String | Student's full name |\n| nim | String | Must be unique, max 13 digits |\n| ymd | Date | Date of birth (YYYY-MM-DD) |\n\nResponse Example:\n\n``` json\n{\n  \"message\": \"Student registered successfully!\",\n  \"student\": {\n    \"id\": 1,\n    \"user_id\": 2,\n    \"nama\": \"John Doe\",\n    \"nim\": \"123456789\",\n    \"ymd\": \"2000-01-01\"\n  }\n}\n\n ```\n\n➤ Update a Student  \nURL: PUT /api/students/{id}  \nRequired Fields: (Same as Create Student)\n\n➤ Delete a Student  \nURL: DELETE /api/students/{id}\n\n🔹 Create Student (Admin Only)  \nURL: POST /api/create-student  \nDescription: Allows an admin to create a student along with their associated user account.\n\nRequired Fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| email | String | Must be unique |\n| password | String | Min: 6 characters |\n| nama | String | Student's full name |\n| nim | String | Must be unique, max 13 digits |\n| ymd | Date | Date of birth (YYYY-MM-DD) |\n\nResponse Example:\n\n``` json\n{\n  \"message\": \"Student created successfully!\",\n  \"student\": {\n    \"id\": 1,\n    \"user_id\": 3,\n    \"nama\": \"Jane Doe\",\n    \"nim\": \"987654321\",\n    \"ymd\": \"1999-12-31\"\n  }\n}\n\n ```\n\n🛠️ Setup & Usage in Postman  \nImport the Collection  \nOpen Postman → Click Import → Select JSON or cURL.\n\nSet Authorization  \nLogin first (POST /api/login) to get an access token.  \nIn Authorization tab, select Bearer Token and paste the token.\n\nTest Endpoints  \nUse the detailed descriptions to make the correct API calls.\n\n📌 Notes  \n✅ Use correct role-based authentication for endpoints.  \n✅ Ensure students exist before searching by nim, nama, or ymd.  \n✅ All protected routes require a valid Bearer Token.  \n✅ Admin has full access, while students can only access their profile.\n\n💡 Now you're ready to test your Laravel API using Postman! 🚀",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "13351516"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/users/{{id}}",
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "admin",
+									"description": "string value",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"description": "string value, email validation",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"description": "string value, minum 6",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"description": "enum vallue [student,admin]",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/users",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "Student A",
+									"description": "string value",
+									"type": "text"
+								},
+								{
+									"key": "nim",
+									"value": "03222222422",
+									"description": "string that can only contain number, and using 0 in the front is ok",
+									"type": "text"
+								},
+								{
+									"key": "ymd",
+									"value": "20221201",
+									"description": "date value",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"description": "string value, email validation",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"description": "string value, minum 6",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"description": "enum vallue [student,admin]",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/create-student",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "admin",
+									"description": "string value",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"description": "string value, email validation",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"description": "string value, minum 6",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"description": "enum vallue [student,admin]",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/users/{{id}}",
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/users/{{id}}",
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMjE3ZGM1NzQ4ZWI3NDZkMDk5MjZhM2VjZmMzOTE1ODExZjM5M2RmYmY5ZTkwOTRlYjg1NmZkMDM5NDA3MWYxNDdhYjU4NGE4YzA3YzlhZWUiLCJpYXQiOjE3Mzg5Mjc3MjMuMzIxOTczLCJuYmYiOjE3Mzg5Mjc3MjMuMzIxOTc3LCJleHAiOjE3NzA0NjM3MjMuMzA4NTcsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.JiGSh154WidhWkB10OX_wEYWksfEDwERuoikxCCkm2LXykTnbGt9Zxu3HD86FpysYuyTEonH7XAfrb2OQHYbvnHUjG5Ag5S9H8ZrQpVAC8UUvFzwBIKEHZYMoJ0rnHF8p3Q6_IImJolfu3rhLiR71m967RjY09hhxyN7BaKkByx819WS3wXSykGi6kszt6Vk5J63KF2iLxYsURAqoMzqwxU8ERUmNgs2DUvNRznRo_1GdMkvSkYh8mlSZCWh8opMyo3lClZRrNOnP5y71-MgtUtw8xlrF_kkW7w8S_08kusJe3PjqCbywAL3mIuUauwjcspZAIbIz2sGW79-FEj7gYlOqkFTbEZU9KQzRhyCCz20_6ZokeYJcmBCJtWZT7kfxmfzb7wg88fE3PWcdhHsVreMKVJOxgSugSMqBQxQ4-ZYbcrrXN4y8QTguoXLmV9reJqpRGRJv6WRHV0tomXR2J7iTg5p95fIDTKPRMTT-tVmyv0zeMEB7-t7GMP-_TNiEeoogkrUSkiGrRU9_K1ofy3wJ9WyXTHwwnDQl4kpODFQvk8OzQMMn0BdbQliZLuT6lSNNtzM77wVI8u3xYITCYWE9beAowkAxYab_voJxxWhHmt966zCWRKqT7Vh5giXoOwHzeOWEoBKYJOf0bFxDSoNSnswpNPg4NJuBBSyLfw"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"students"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/students/{{id}}",
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "test",
+									"description": "string value",
+									"type": "text"
+								},
+								{
+									"key": "nim",
+									"value": "02133232331",
+									"description": "string that can only contain number, and using 0 in the front is ok",
+									"type": "text"
+								},
+								{
+									"key": "ymd",
+									"value": "20230528",
+									"description": "date value",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"description": "big integer value, must be exsist data in user table, must be unique",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/students",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "test",
+									"description": "string value",
+									"type": "text"
+								},
+								{
+									"key": "nim",
+									"value": "02133232331",
+									"description": "string that can only contain number, and using 0 in the front is ok",
+									"type": "text"
+								},
+								{
+									"key": "ymd",
+									"value": "20230528",
+									"description": "date value",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/students/{{id}}",
+						"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/students/{{id}}",
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "student-profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": "{{base_url}}/student-profile",
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "student-search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/student-search?nama&nim&ymd",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student-search"
+							],
+							"query": [
+								{
+									"key": "nama",
+									"value": null,
+									"description": "string value"
+								},
+								{
+									"key": "nim",
+									"value": null,
+									"description": "string that can only contain number, and using 0 in the front is ok"
+								},
+								{
+									"key": "ymd",
+									"value": null,
+									"description": "date value"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			],
+			"description": "this is student endpoint, in here you must have 2 type clearance to access endpoint here  \n\"student-search\" endpoint can only be accessed with student level account  \nother than that can only be accessed with admin level account  \n  \nremember to fill"
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/login/",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "login student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "student.a@student.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password123",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/login/",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		},
+		{
+			"key": "index",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

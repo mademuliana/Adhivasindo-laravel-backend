@@ -13,6 +13,7 @@ class Student extends Model
         'nama',
         'nim',
         'ymd',
+        'user_id',
     ];
 
     /**

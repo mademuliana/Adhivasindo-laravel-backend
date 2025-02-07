@@ -10,8 +10,11 @@ class StudentController extends Controller
 {
     public function index()
     {
-        return response()->json(Student::all());
+        $students = Student::paginate(10);
+
+        return response()->json($students);
     }
+
 
     public function search(Request $request)
     {

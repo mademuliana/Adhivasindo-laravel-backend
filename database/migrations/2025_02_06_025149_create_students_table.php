@@ -15,8 +15,8 @@ return new class extends Migration
             $table->date('ymd')->nullable();
             $table->timestamps();
 
-            // $table->unsignedBigInteger('user_id');
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         DB::statement("ALTER TABLE students ADD CONSTRAINT check_nim CHECK (nim REGEXP '^[0-9]+$')");

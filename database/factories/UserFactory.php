@@ -52,6 +52,10 @@ class UserFactory extends Factory
                     'user_id' => $user->id,
                 ]);
             }
+            if (class_exists(\Laravel\Passport\HasApiTokens::class)) {
+                $token = $user->createToken('AdhivashindoToken')->accessToken;
+                \Log::info("Generated Token for User ID {$user->id}: {$token}");
+            }
         });
     }
 }

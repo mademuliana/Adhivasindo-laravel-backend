@@ -10,15 +10,15 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($role === 'student' && $user->role !== 'student') {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-            if ($role === 'admin' && $user->role !== 'admin') {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
+        $user = Auth::user();
+
+        // Check if the user's role matches the required role
+        if ($user->role !== $role) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);

@@ -4,6 +4,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class StudentDataService
 {
@@ -32,13 +33,17 @@ class StudentDataService
                 throw new \Exception("Missing expected columns.");
             }
 
-            $batches = array_chunk($datas, 100);
+            $batches = array_chunk($datas, 25);
             $anyNewRecords = false;
 
-            foreach ($batches as $batch) {
+            foreach ($batches as $index => $batch) {
+                echo "Processing batch " . ($index + 1) . "...\n";
+
                 if ($this->processBatch($batch, $headerMap)) {
                     $anyNewRecords = true;
                 }
+
+                echo "Batch " . ($index + 1) . " processed.\n";
             }
 
             return $anyNewRecords ? true : null;
@@ -53,6 +58,7 @@ class StudentDataService
         try {
             DB::beginTransaction();
             $students = [];
+            $users = [];
             $existingRecords = 0;
 
             foreach ($batch as $data) {
@@ -69,7 +75,27 @@ class StudentDataService
                 $exists = DB::table('students')->where(compact('nim', 'ymd', 'nama'))->exists();
 
                 if (!$exists) {
-                    $students[] = compact('nim', 'ymd', 'nama');
+                    $username = strtolower(str_replace(' ', '.', $nama));
+                    $email = $username . '@student.com';
+                    $password = Hash::make('password123');
+
+                    $userId = DB::table('users')->insertGetId([
+                        'username' => $username,
+                        'email' => $email,
+                        'password' => $password,
+                        'role' => 'student',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    $students[] = [
+                        'user_id' => $userId,
+                        'nim' => $nim,
+                        'ymd' => $ymd,
+                        'nama' => $nama,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
                 } else {
                     $existingRecords++;
                 }
@@ -78,14 +104,19 @@ class StudentDataService
             if (!empty($students)) {
                 DB::table('students')->insert($students);
                 DB::commit();
-                return true;
+                echo "  ✔ Added " . count($students) . " new students.\n";
             } else {
                 DB::rollback();
-                return false;
+                echo "  ⚠ No new students added.\n";
             }
+
+            echo "  ⚠ Skipped " . $existingRecords . " existing records.\n";
+
+            return !empty($students);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error("Batch failed: " . $e->getMessage());
+            echo "  ❌ Error processing batch: " . $e->getMessage() . "\n";
             return false;
         }
     }
@@ -94,5 +125,4 @@ class StudentDataService
     {
         return preg_match('/^\d{8}$/', $date);
     }
-
 }

@@ -13,11 +13,12 @@ Route::post('login', [AuthenticationController::class, 'login'])->name('login');
 Route::middleware(['auth:api', \App\Http\Middleware\RoleMiddleware::class.':student'])->group(function () {
     Route::get('student-profile', [UserController::class, 'studentProfile']);
 });
-// Route::middleware(['auth:api'])->group(function () {
-// });
+
 // Admin-only routes
 Route::middleware(['auth:api', \App\Http\Middleware\RoleMiddleware::class.':admin'])->group(function () {
+    Route::get('student-search', [StudentController::class, 'search']);
+    Route::post('create-student', [UserController::class, 'createStudent']);
     Route::resource('users', UserController::class);
+    Route::resource('students', StudentController::class);
 });
 
-Route::get('student-search', [StudentController::class, 'search']);
